@@ -1,13 +1,13 @@
-FIRM_HOME   = $(HOME)/develop/firm
-FIRM_BUILD  = $(FIRM_HOME)/build/i686-pc-linux-gnu/debug/
-FIRM_CFLAGS = -I$(FIRM_HOME)/libfirm/include -I$(FIRM_HOME)/obstack -I$(FIRM_HOME)/libcore -I$(FIRM_HOME)/libcore/libcore -I$(FIRM_HOME)
-FIRM_LIBS   = -L$(FIRM_BUILD) -lfirm -lm -lz -ldl
-LIBFIRM_FILE = $(FIRM_BUILD)/libfirm.a
+FIRM_HOME          = ./libfirm
+FIRM_BUILD         = $(FIRM_HOME)/build
+LIBFIRM_CFLAGS     = -I$(FIRM_HOME)/include
+LIBFIRM_LFLAGS     = $(FIRM_BUILD)/debug/libfirm.a
 
-LIBOO_HOME  = $(HOME)/develop/liboo
-LIBOO_BUILD = $(LIBOO_HOME)/build
-LIBOO_CFLAGS= -I$(LIBOO_HOME)/include/
-LIBOO_LIBS  = -L$(LIBOO_BUILD) -loo -Wl,-R$(LIBOO_BUILD)
+LIBUNWIND_HOME     = ./libunwind
+LIBUNWIND_CFLAGS   = -I$(LIBUNWIND_HOME)/include -D_GNU_SOURCE -Wall
+LIBUNWIND_LFLAGS   = -L$(LIBUNWIND_HOME)/src/.libs -Wl,-R$(LIBUNWIND_HOME)/src/.libs -lunwind -lunwind-x86
 
-INSTALL = /usr/bin/install
-
+LIBOO_HOME         = ./liboo
+LIBOO_BUILD        = $(LIBOO_HOME)/build
+LIBOO_CFLAGS       = -I$(LIBOO_HOME)/include
+LIBOO_LFLAGS       = $(LIBOO_BUILD)/liboo.a -lm
