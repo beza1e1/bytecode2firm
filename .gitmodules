@@ -1,0 +1,9 @@
+[submodule "libfirm"]
+	path = libfirm
+	url = http://pp.info.uni-karlsruhe.de/git/libFirm
+[submodule "liboo"]
+	path = liboo
+	url = http://pp.info.uni-karlsruhe.de/git/liboo/
+[submodule "libunwind"]
+	path = libunwind
+	url = git://git.sv.gnu.org/libunwind.git
