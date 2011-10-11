@@ -152,7 +152,7 @@ static int *irg_dump_no;
 
 static void do_lower_highlevel(ir_graph *irg)
 {
-	lower_highlevel_graph(irg, false);
+	lower_highlevel_graph(irg);
 }
 
 static void do_stred(ir_graph *irg)
@@ -189,11 +189,6 @@ static void do_gcse(ir_graph *irg)
 	set_opt_global_cse(1);
 	optimize_graph_df(irg);
 	set_opt_global_cse(0);
-}
-
-static void lower_blockcopy(ir_graph *irg)
-{
-	lower_CopyB(irg, 128, 4);
 }
 
 typedef enum opt_target {
@@ -259,7 +254,6 @@ static opt_config_t opts[] = {
 	IRG("vrp",               set_vrp_data,             "value range propagation",                               OPT_FLAG_NONE),
 	IRP("inline",            do_inline,                "inlining",                                              OPT_FLAG_NONE),
 	IRP("lower-const",       lower_const_code,         "lowering of constant code",                             OPT_FLAG_HIDE_OPTIONS | OPT_FLAG_NO_DUMP | OPT_FLAG_NO_VERIFY | OPT_FLAG_ESSENTIAL),
-	IRG("lower-blockcopy",   lower_blockcopy,          "replace small block copies with load/store sequences",  OPT_FLAG_NO_DUMP),
 	IRP("target-lowering",   be_lower_for_target,      "lowering necessary for target architecture",            OPT_FLAG_HIDE_OPTIONS | OPT_FLAG_ESSENTIAL),
 	IRP("opt-func-call",     optimize_funccalls,       "function call optimization",                            OPT_FLAG_NONE),
 	IRP("opt-proc-clone",    do_cloning,               "procedure cloning",                                     OPT_FLAG_NONE),
@@ -381,7 +375,6 @@ static void enable_safe_defaults(void)
 	set_opt_enabled("confirm", true);
 	set_opt_enabled("opt-load-store", true);
 	set_opt_enabled("lower", true);
-	set_opt_enabled("lower-blockcopy", true);
 	set_opt_enabled("deconv", true);
 	set_opt_enabled("remove-confirms", true);
 	set_opt_enabled("ivopts", true);
@@ -615,7 +608,7 @@ void gen_firm_init(void)
 	if (firm_dump.stat_dag)
 		pattern |= FIRMSTAT_COUNT_DAG;
 
-	ir_init(NULL);
+	ir_init();
 	firm_init_stat(firm_dump.statistic == STAT_NONE ?
 			0 : FIRMSTAT_ENABLED | FIRMSTAT_COUNT_STRONG_OP
 			| FIRMSTAT_COUNT_CONSTS | pattern);
@@ -644,7 +637,6 @@ void gen_firm_init(void)
 	set_opt_algebraic_simplification(firm_opt.const_folding);
 	set_opt_cse(firm_opt.cse);
 	set_opt_global_cse(0);
-	set_opt_unreachable_code(1);
 }
 
 /**
@@ -692,7 +684,6 @@ void gen_firm_finish(FILE *out, const char *input_filename)
 	for (i = get_irp_n_irgs() - 1; i >= 0; --i) {
 		ir_graph *irg = get_irp_irg(i);
 		do_irg_opt(irg, "control-flow");
-		do_irg_opt(irg, "lower-blockcopy");
 	}
 
 	if (firm_dump.statistic & STAT_BEFORE_OPT) {
